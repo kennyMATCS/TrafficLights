@@ -1,0 +1,5 @@
+name: TrafficLights
+author: Kenny
+version: 0.1
+main: me.kenny.trafficlights.TrafficLights
+description: Traffic lights that automatically switch based on a timer.
