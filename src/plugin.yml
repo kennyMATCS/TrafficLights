@@ -3,3 +3,7 @@ author: Kenny
 version: 0.1
 main: me.kenny.trafficlights.TrafficLights
 description: Traffic lights that automatically switch based on a timer.
+commands:
+  traffic:
+    aliases: [trafficlights]
+    description: Traffic lights base command.
