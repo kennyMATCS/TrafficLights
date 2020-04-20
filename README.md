@@ -14,7 +14,9 @@ Traffic lights can then be toggled by running the command `/traffic toggle` whil
 To set the duration a traffic light will stay on red or green, use the commands `/traffic setgreentime <seconds>` and `/traffic setredtime <seconds>` while facing a traffic light. By default, traffic lights will both remain red and green for 10 seconds.
 
 ## Commands
-`/traffic new` Creates a new traffic light at two currently faced stacked black concrete blocks. <br> 
+`/traffic new` Creates a new traffic light at two currently faced stacked black concrete blocks. <br>
+
+`/traffic delete` Deletes the currently faced traffic light. <br> 
 
 `/traffic switch` Switches the red and green light on the currently faced traffic light. <br>
 

@@ -1,6 +1,9 @@
 package me.kenny.trafficlights;
 
 import me.kenny.trafficlights.command.TrafficCommand;
+import me.kenny.trafficlights.listener.TrafficLightListener;
+import me.kenny.trafficlights.runnable.TrafficLight;
+import me.kenny.trafficlights.runnable.TrafficLightAutomator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -12,13 +15,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TrafficLights extends JavaPlugin {
-    private final int redLightTime = 10;
-    private final int greenLightTime = 10;
+    private final int redLightTime = 3;
+    private final int greenLightTime = 3;
+
+    private TrafficLightAutomator trafficLightAutomator;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         getCommand("traffic").setExecutor(new TrafficCommand(this));
+        getServer().getPluginManager().registerEvents(new TrafficLightListener(this), this);
+        trafficLightAutomator = new TrafficLightAutomator(this);
     }
 
     public boolean addTrafficLight(Block greenLight, Block redLight) {
@@ -39,6 +46,14 @@ public class TrafficLights extends JavaPlugin {
         return true;
     }
 
+    public Location getLocationFromSerialization(String path) {
+        int x = getConfig().getInt(path + ".x");
+        int y = getConfig().getInt(path + ".y");
+        int z = getConfig().getInt(path + ".z");
+        String world = getConfig().getString(path + ".world");
+        return new Location(Bukkit.getWorld(world), x, y, z);
+    }
+
     private Map<String, Object> getLocationSerialization(Location location) {
         Map<String, Object> map = new HashMap<>();
         map.put("x", location.getBlockX());
@@ -48,7 +63,7 @@ public class TrafficLights extends JavaPlugin {
         return map;
     }
 
-    private boolean hasIdenticalTrafficLight(Location location, String path) {
+    public boolean hasIdenticalTrafficLight(Location location, String path) {
         boolean identical = false;
         for (String section : getConfig().getKeys(false)) {
             for (String value : getConfig().getConfigurationSection(section).getKeys(false)) {
@@ -61,7 +76,14 @@ public class TrafficLights extends JavaPlugin {
         return identical;
     }
 
+    public boolean hasIdenticalTrafficLight(Location location) {
+        return hasIdenticalTrafficLight(location, "");
+    }
+
     private boolean isIdenticalLocation(Map<String, Object> values, Location location) {
+        // TODO: traffic light setgreentime and setredtime
+        // TODO: traffic light list
+
         int x = 0;
         int y = 0;
         int z = 0;

@@ -21,6 +21,12 @@ public class TrafficCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+
+            if (!player.hasPermission("traffic.create")) {
+                player.sendMessage(ChatColor.RED + "You do not have permission to run this command!");
+                return true;
+            }
+
             if (args.length != 0) {
                 switch (args[0]) {
                     case "new":
@@ -76,6 +82,7 @@ public class TrafficCommand implements CommandExecutor {
     public void helpCommand(Player player) {
         player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Traffic Light Commands");
         player.sendMessage(ChatColor.YELLOW + "/traffic new " + ChatColor.WHITE + "Creates a new traffic light at two currently faced stacked black concrete blocks.");
+        player.sendMessage(ChatColor.YELLOW + "/traffic delete " + ChatColor.WHITE + "Deletes the currently faced traffic light.");
         player.sendMessage(ChatColor.YELLOW + "/traffic switch " + ChatColor.WHITE + "Switches the red and green light on the currently faced traffic light.");
         player.sendMessage(ChatColor.YELLOW + "/traffic toggle " + ChatColor.WHITE + "Toggles the currently faced traffic light.");
         player.sendMessage(ChatColor.YELLOW + "/traffic setgreentime <seconds> " + ChatColor.WHITE + "Sets the amount of seconds a green light will remain at the currently faced traffic light.");
