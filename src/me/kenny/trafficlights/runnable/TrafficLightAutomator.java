@@ -23,12 +23,8 @@ public class TrafficLightAutomator {
             int greenLightTime = trafficLights.getConfig().getInt(section + ".greenLightTime");
             int redLightTime = trafficLights.getConfig().getInt(section + ".redLightTime");
 
-            TrafficLight light = new TrafficLight(LightState.GREEN, greenLightLocation, redLightLocation, greenLightTime, redLightTime);
-            lights.add(light);
-
-            Block block = greenLightLocation.getWorld().getBlockAt(greenLightLocation);
-            block.setType(light.getState().getType());
-            block.setData(light.getState().getData());
+            TrafficLight light = new TrafficLight(LightState.GREEN, greenLightLocation, redLightLocation, greenLightTime, redLightTime, trafficLights);
+            addLight(light);
         }
 
         Bukkit.getScheduler().runTaskTimer(trafficLights, new BukkitRunnable() {
@@ -46,5 +42,26 @@ public class TrafficLightAutomator {
                 }
             }
         }, 0L, 20L);
+    }
+
+    public List<TrafficLight> getLights() {
+        return lights;
+    }
+
+    public void addLight(TrafficLight light) {
+        lights.add(light);
+
+        Block block = light.getGreenLightLocation().getWorld().getBlockAt(light.getGreenLightLocation());
+        block.setType(light.getState().getType());
+        block.setData(light.getState().getData());
+    }
+
+    public TrafficLight getLight(Block block) {
+        for (TrafficLight light : lights) {
+            if (light.getGreenLightLocation().equals(block.getLocation()) || light.getRedLightLocation().equals(block.getLocation())) {
+                return light;
+            }
+        }
+        return null;
     }
 }

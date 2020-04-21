@@ -2,6 +2,7 @@ package me.kenny.trafficlights;
 
 import me.kenny.trafficlights.command.TrafficCommand;
 import me.kenny.trafficlights.listener.TrafficLightListener;
+import me.kenny.trafficlights.runnable.LightState;
 import me.kenny.trafficlights.runnable.TrafficLight;
 import me.kenny.trafficlights.runnable.TrafficLightAutomator;
 import org.bukkit.Bukkit;
@@ -15,8 +16,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TrafficLights extends JavaPlugin {
-    private final int redLightTime = 3;
-    private final int greenLightTime = 3;
+    private final int redLightTime = 10;
+    private final int greenLightTime = 10;
 
     private TrafficLightAutomator trafficLightAutomator;
 
@@ -26,6 +27,18 @@ public class TrafficLights extends JavaPlugin {
         getCommand("traffic").setExecutor(new TrafficCommand(this));
         getServer().getPluginManager().registerEvents(new TrafficLightListener(this), this);
         trafficLightAutomator = new TrafficLightAutomator(this);
+    }
+
+    @Override
+    public void onDisable() {
+        for (TrafficLight light : getTrafficLightAutomator().getLights()) {
+            light.setBlackConcrete(light.getGreenLightLocation());
+            light.setBlackConcrete(light.getRedLightLocation());
+        }
+    }
+
+    public TrafficLightAutomator getTrafficLightAutomator() {
+        return trafficLightAutomator;
     }
 
     public boolean addTrafficLight(Block greenLight, Block redLight) {
@@ -43,7 +56,29 @@ public class TrafficLights extends JavaPlugin {
         reorganize("");
         reloadConfig();
 
+        getTrafficLightAutomator().addLight(new TrafficLight(LightState.GREEN, greenLight.getLocation(), redLight.getLocation(), greenLightTime, redLightTime,this));
+
         return true;
+    }
+
+    public void deleteTrafficLight(TrafficLight light) {
+        getTrafficLightAutomator().getLights().remove(light);
+        getConfig().set(getIdenticalTrafficLightKey(light.getGreenLightLocation()), null);
+        saveConfig();
+    }
+
+    public void setRedLightTime(TrafficLight trafficLight, int seconds) {
+        if (hasIdenticalTrafficLight(trafficLight.getGreenLightLocation())) {
+            getConfig().set(getIdenticalTrafficLightKey(trafficLight.getGreenLightLocation()) + ".redLightTime", seconds);
+            saveConfig();
+        }
+    }
+
+    public void setGreenLightTime(TrafficLight trafficLight, int seconds) {
+        if (hasIdenticalTrafficLight(trafficLight.getGreenLightLocation())) {
+            getConfig().set(getIdenticalTrafficLightKey(trafficLight.getGreenLightLocation()) + ".greenLightTime", seconds);
+            saveConfig();
+        }
     }
 
     public Location getLocationFromSerialization(String path) {
@@ -76,14 +111,23 @@ public class TrafficLights extends JavaPlugin {
         return identical;
     }
 
+    public String getIdenticalTrafficLightKey(Location location) {
+        for (String section : getConfig().getKeys(false)) {
+            for (String value : getConfig().getConfigurationSection(section).getKeys(false)) {
+                if (value.equals("greenLightLocation") || value.equals("redLightLocation")) {
+                    if (isIdenticalLocation(getConfig().getConfigurationSection(section + "." + value).getValues(false), location))
+                        return section;
+                }
+            }
+        }
+        return "";
+    }
+
     public boolean hasIdenticalTrafficLight(Location location) {
         return hasIdenticalTrafficLight(location, "");
     }
 
     private boolean isIdenticalLocation(Map<String, Object> values, Location location) {
-        // TODO: traffic light setgreentime and setredtime
-        // TODO: traffic light list
-
         int x = 0;
         int y = 0;
         int z = 0;

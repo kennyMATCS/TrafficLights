@@ -7,9 +7,7 @@ To begin setting up a traffic light, stack **2 black concrete blocks** on top of
 
 Next, run the command `/traffic new` while facing one of the blocks to create the traffic light. <br>
 
-By default, the green light will be set to the top concrete block, but it can be switched to the red light by running the command `/traffic switch` while facing one of the blocks. <br>
-
-Traffic lights can then be toggled by running the command `/traffic toggle` while facing it. <br>
+By default, the green light will be set to the top concrete block. <br>
 
 To set the duration a traffic light will stay on red or green, use the commands `/traffic setgreentime <seconds>` and `/traffic setredtime <seconds>` while facing a traffic light. By default, traffic lights will both remain red and green for 10 seconds.
 
@@ -18,12 +16,6 @@ To set the duration a traffic light will stay on red or green, use the commands 
 
 `/traffic delete` Deletes the currently faced traffic light. <br> 
 
-`/traffic switch` Switches the red and green light on the currently faced traffic light. <br>
-
-`/traffic toggle` Toggles the currently faced traffic light. <br>
-
 `/traffic setgreentime <seconds>` Sets the amount of seconds a green light will remain at the currently faced traffic light. <br>
 
 `/traffic setredtime <seconds>` Sets the amount of seconds a red light will remain at the currently faced traffic light. <br>
-
-`/traffic list` Lists all traffic lights.
