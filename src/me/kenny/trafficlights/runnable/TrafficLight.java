@@ -17,7 +17,7 @@ public class TrafficLight {
     private boolean toggled;
     private TrafficLights trafficLights;
 
-    public TrafficLight(LightState state, Location greenLightLocation, Location redLightLocation, int greenLightTime, int redLightTime, TrafficLights trafficLights) {
+    public TrafficLight(LightState state, Location greenLightLocation, Location redLightLocation, int greenLightTime, int redLightTime, boolean toggled, TrafficLights trafficLights) {
         this.trafficLights = trafficLights;
         this.startTime = System.currentTimeMillis();
         this.state = state;
@@ -50,6 +50,15 @@ public class TrafficLight {
         redLightTime = s;
         trafficLights.setRedLightTime(this, s);
         resetStartTime();
+    }
+
+    public void toggle(boolean b) {
+        toggled = b;
+        if (!toggled) {
+            setBlackConcrete(getGreenLightLocation());
+            setBlackConcrete(getRedLightLocation());
+        }
+        trafficLights.setToggled(this, b);
     }
 
     public LightState getState() {

@@ -65,7 +65,7 @@ public class TrafficCommand implements CommandExecutor {
                     case "delete":
                         facing = player.getTargetBlock(null, 10);
                         if (isTrafficLight(facing)) {
-                            TrafficLight light = trafficLights.getTrafficLightAutomator().getLight(facing);
+                            TrafficLight light = trafficLights.getTrafficLightAutomator().getLight(facing.getLocation());
                             trafficLights.deleteTrafficLight(light);
                             light.setBlackConcrete(light.getGreenLightLocation());
                             light.setBlackConcrete(light.getRedLightLocation());
@@ -79,7 +79,7 @@ public class TrafficCommand implements CommandExecutor {
                         if (isTrafficLight(facing)) {
                             if (args.length >= 2) {
                                 if (StringUtils.isNumeric(args[1])) {
-                                    TrafficLight trafficLight = trafficLights.getTrafficLightAutomator().getLight(facing);
+                                    TrafficLight trafficLight = trafficLights.getTrafficLightAutomator().getLight(facing.getLocation());
                                     trafficLight.setGreenLightTime(Integer.valueOf(args[1]));
                                     player.sendMessage(ChatColor.GREEN + "Set the green light time of your currently faced traffic light to " + args[1] + " seconds.");
                                 }
@@ -95,13 +95,25 @@ public class TrafficCommand implements CommandExecutor {
                         if (isTrafficLight(facing)) {
                             if (args.length >= 2) {
                                 if (StringUtils.isNumeric(args[1])) {
-                                    TrafficLight trafficLight = trafficLights.getTrafficLightAutomator().getLight(facing);
+                                    TrafficLight trafficLight = trafficLights.getTrafficLightAutomator().getLight(facing.getLocation());
                                     trafficLight.setRedLightTime(Integer.valueOf(args[1]));
                                     player.sendMessage(ChatColor.GREEN + "Set the red light time of your currently faced traffic light to " + args[1] + " seconds.");
                                 }
                             } else {
                                 player.sendMessage(ChatColor.RED + "You must input an amount of seconds!");
                             }
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You must be facing an existing traffic light!");
+                        }
+                        break;
+                    case "toggle":
+                        facing = player.getTargetBlock(null, 10);
+                        if (isTrafficLight(facing)) {
+                            TrafficLight trafficLight = trafficLights.getTrafficLightAutomator().getLight(facing.getLocation());
+                            boolean toggled = !trafficLight.isToggled();
+                            trafficLight.toggle(toggled);
+                            String message = toggled ? ChatColor.GREEN + "You have toggled the traffic light on." : ChatColor.GREEN + "You have toggled the traffic light off.";
+                            player.sendMessage(message);
                         } else {
                             player.sendMessage(ChatColor.RED + "You must be facing an existing traffic light!");
                         }
@@ -138,5 +150,6 @@ public class TrafficCommand implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "/traffic delete " + ChatColor.WHITE + "Deletes the currently faced traffic light.");
         player.sendMessage(ChatColor.YELLOW + "/traffic setgreentime <seconds> " + ChatColor.WHITE + "Sets the amount of seconds a green light will remain at the currently faced traffic light.");
         player.sendMessage(ChatColor.YELLOW + "/traffic setredtime <seconds> " + ChatColor.WHITE + "Sets the amount of seconds a red light will remain at the currently faced traffic light.");
+        player.sendMessage(ChatColor.YELLOW + "/traffic toggle " + ChatColor.WHITE + "Toggles the currently faced traffic light.");
     }
 }

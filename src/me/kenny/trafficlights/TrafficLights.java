@@ -51,12 +51,13 @@ public class TrafficLights extends JavaPlugin {
         getConfig().set(Integer.valueOf(nextKey).toString() + ".redLightLocation", getLocationSerialization(redLight.getLocation()));
         getConfig().set(Integer.valueOf(nextKey).toString() + ".greenLightTime", greenLightTime);
         getConfig().set(Integer.valueOf(nextKey).toString() + ".redLightTime", redLightTime);
+        getConfig().set(Integer.valueOf(nextKey).toString() + ".toggled", true);
 
         saveConfig();
         reorganize("");
         reloadConfig();
 
-        getTrafficLightAutomator().addLight(new TrafficLight(LightState.GREEN, greenLight.getLocation(), redLight.getLocation(), greenLightTime, redLightTime,this));
+        getTrafficLightAutomator().addLight(new TrafficLight(LightState.GREEN, greenLight.getLocation(), redLight.getLocation(), greenLightTime, redLightTime, true,this));
 
         return true;
     }
@@ -77,6 +78,13 @@ public class TrafficLights extends JavaPlugin {
     public void setGreenLightTime(TrafficLight trafficLight, int seconds) {
         if (hasIdenticalTrafficLight(trafficLight.getGreenLightLocation())) {
             getConfig().set(getIdenticalTrafficLightKey(trafficLight.getGreenLightLocation()) + ".greenLightTime", seconds);
+            saveConfig();
+        }
+    }
+
+    public void setToggled(TrafficLight trafficLight, boolean b) {
+        if (hasIdenticalTrafficLight(trafficLight.getGreenLightLocation())) {
+            getConfig().set(getIdenticalTrafficLightKey(trafficLight.getGreenLightLocation()) + ".toggled", b);
             saveConfig();
         }
     }

@@ -22,8 +22,9 @@ public class TrafficLightAutomator {
             Location redLightLocation = trafficLights.getLocationFromSerialization(section + ".redLightLocation");
             int greenLightTime = trafficLights.getConfig().getInt(section + ".greenLightTime");
             int redLightTime = trafficLights.getConfig().getInt(section + ".redLightTime");
+            boolean toggled = trafficLights.getConfig().getBoolean(section + ".toggled");
 
-            TrafficLight light = new TrafficLight(LightState.GREEN, greenLightLocation, redLightLocation, greenLightTime, redLightTime, trafficLights);
+            TrafficLight light = new TrafficLight(LightState.GREEN, greenLightLocation, redLightLocation, greenLightTime, redLightTime, toggled, trafficLights);
             addLight(light);
         }
 
@@ -31,7 +32,7 @@ public class TrafficLightAutomator {
             @Override
             public void run() {
                 for (TrafficLight light : lights) {
-                    if (light.isFinished()) {
+                    if (light.isFinished() && light.isToggled()) {
                         if (light.getState().getOpposite() == LightState.RED)
                             light.setState(LightState.RED);
                         else
@@ -56,9 +57,9 @@ public class TrafficLightAutomator {
         block.setData(light.getState().getData());
     }
 
-    public TrafficLight getLight(Block block) {
+    public TrafficLight getLight(Location location) {
         for (TrafficLight light : lights) {
-            if (light.getGreenLightLocation().equals(block.getLocation()) || light.getRedLightLocation().equals(block.getLocation())) {
+            if (light.getGreenLightLocation().equals(location) || light.getRedLightLocation().equals(location)) {
                 return light;
             }
         }
